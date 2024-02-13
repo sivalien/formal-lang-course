@@ -14,7 +14,7 @@ def get_graph_info_by_name(name: str):
 
 
 def create_and_save_two_cycle_graph(
-        path: str, count1: int, count2: int, labels: Tuple[str, str] = ('a', 'b')
+    path: str, count1: int, count2: int, labels: Tuple[str, str] = ('a', 'b')
 ):
     graph = cfpq_data.graphs.generators.labeled_two_cycles_graph(
         n=count1, m=count2, labels=labels

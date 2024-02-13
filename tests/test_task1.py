@@ -13,28 +13,29 @@ def test_get_graph_info_by_name_wc():
 
 
 def test_get_graph_info_by_name_skos():
-    labels = {"comment",
-              "contributor",
-              "creator",
-              "definition",
-              "description",
-              "disjointWith",
-              "domain",
-              "example",
-              "first",
-              "inverseOf",
-              "isDefinedBy",
-              "label",
-              "range",
-              "rest",
-              "scopeNote",
-              "seeAlso",
-              "subClassOf",
-              "subPropertyOf",
-              "title",
-              "type",
-              "unionOf"
-            }
+    labels = {
+        "comment",
+        "contributor",
+        "creator",
+        "definition",
+        "description",
+        "disjointWith",
+        "domain",
+        "example",
+        "first",
+        "inverseOf",
+        "isDefinedBy",
+        "label",
+        "range",
+        "rest",
+        "scopeNote",
+        "seeAlso",
+        "subClassOf",
+        "subPropertyOf",
+        "title",
+        "type",
+        "unionOf"
+    }
     assert get_graph_info_by_name("skos") == (144, 252, labels)
 
 
@@ -42,7 +43,7 @@ def test_create_and_save_two_cycle_graph(tmp_path):
     path = tmp_path / "test_graph.dot"
     count1 = 3
     count2 = 4
-    labels = ('x', 'y')
+    labels = ("x", "y")
     edges = {
         ("1", "0"),
         ("1", "2"),
@@ -53,7 +54,7 @@ def test_create_and_save_two_cycle_graph(tmp_path):
         ("5", "6"),
         ("6", "7"),
         ("0", "7"),
-        }
+    }
 
     create_and_save_two_cycle_graph(path, count1, count2, labels)
 

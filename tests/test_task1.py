@@ -34,7 +34,7 @@ def test_get_graph_info_by_name_skos():
         "subPropertyOf",
         "title",
         "type",
-        "unionOf"
+        "unionOf",
     }
     assert get_graph_info_by_name("skos") == (144, 252, labels)
 

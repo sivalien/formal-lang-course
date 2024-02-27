@@ -15,7 +15,6 @@ def graph_to_nfa(
     graph: MultiDiGraph, start_states: Set[int], final_states: Set[int]
 ) -> NondeterministicFiniteAutomaton:
     nfa = NondeterministicFiniteAutomaton()
-
     all_nodes = set(graph.nodes())
 
     for state in start_states or all_nodes:

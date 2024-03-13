@@ -25,15 +25,15 @@ class FiniteAutomaton:
         self.final_states = fa.final_states
 
         self.state_to_index = {state: index for index, state in enumerate(fa.states)}
-        self.index_to_state = {index: state for state, index in self.state_to_index.items()}
+        self.index_to_state = {
+            index: state for state, index in self.state_to_index.items()
+        }
         n_states = len(fa.states)
 
         for from_state, transitions in fa.to_dict().items():
             for symbol, to_states in transitions.items():
                 if symbol not in self.matrices.keys():
-                    self.matrices[symbol] = dok_matrix(
-                        (n_states, n_states), dtype=bool
-                    )
+                    self.matrices[symbol] = dok_matrix((n_states, n_states), dtype=bool)
                 if isinstance(fa, DeterministicFiniteAutomaton):
                     self.matrices[symbol][
                         self.state_to_index[from_state], self.state_to_index[to_states]
@@ -133,5 +133,6 @@ def paths_ends(
     return [
         (nfa.get_state_by_index(from_state // n), nfa.get_state_by_index(to_state // n))
         for from_state, to_state in zip(from_states, to_states)
-        if from_state in intersection.start_states and to_state in intersection.final_states
+        if from_state in intersection.start_states
+        and to_state in intersection.final_states
     ]

@@ -14,7 +14,12 @@ def reachability_with_constraints(
     n = len(constraints_fa)
 
     for from_state, to_state in zip(from_states, to_states):
-        if from_state in intersection.start_states and to_state in intersection.final_states:
-            res[fa.get_state_by_index(from_state // n)].add(fa.get_state_by_index(to_state // n))
+        if (
+            from_state in intersection.start_states
+            and to_state in intersection.final_states
+        ):
+            res[fa.get_state_by_index(from_state // n)].add(
+                fa.get_state_by_index(to_state // n)
+            )
 
     return res

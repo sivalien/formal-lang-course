@@ -13,12 +13,7 @@ from project.task2 import regex_to_dfa, graph_to_nfa
 
 
 class FiniteAutomaton:
-    def __init__(
-        self,
-        fa: (
-            DeterministicFiniteAutomaton | NondeterministicFiniteAutomaton | None
-        ) = None,
-    ) -> None:
+    def __init__(self, fa=None) -> None:
         self.matrices = {}
         if fa is None:
             self.start_states = set()

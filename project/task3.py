@@ -13,7 +13,12 @@ from project.task2 import regex_to_dfa, graph_to_nfa
 
 
 class FiniteAutomaton:
-    def __init__(self, fa: DeterministicFiniteAutomaton | NondeterministicFiniteAutomaton | None = None) -> None:
+    def __init__(
+        self,
+        fa: (
+            DeterministicFiniteAutomaton | NondeterministicFiniteAutomaton | None
+        ) = None,
+    ) -> None:
         self.matrices = {}
         if fa is None:
             self.start_states = set()
@@ -30,12 +35,19 @@ class FiniteAutomaton:
         for from_state, transitions in fa.to_dict().items():
             for symbol, to_states in transitions.items():
                 if symbol not in self.matrices.keys():
-                    self.matrices[symbol] = dok_matrix((self.n_states, self.n_states), dtype=bool)
+                    self.matrices[symbol] = dok_matrix(
+                        (self.n_states, self.n_states), dtype=bool
+                    )
                 if isinstance(fa, DeterministicFiniteAutomaton):
-                    self.matrices[symbol][self.state_to_index[from_state], self.state_to_index[to_states]] = True
+                    self.matrices[symbol][
+                        self.state_to_index[from_state], self.state_to_index[to_states]
+                    ] = True
                 else:
                     for to_state in to_states:
-                        self.matrices[symbol][self.state_to_index[from_state], self.state_to_index[to_state]] = True
+                        self.matrices[symbol][
+                            self.state_to_index[from_state],
+                            self.state_to_index[to_state],
+                        ] = True
 
     def to_nfa(self) -> NondeterministicFiniteAutomaton:
         nfa = NondeterministicFiniteAutomaton()
@@ -62,7 +74,9 @@ class FiniteAutomaton:
         return len(self.matrices) == 0
 
 
-def intersect_automata(automaton1: FiniteAutomaton, automaton2: FiniteAutomaton) -> FiniteAutomaton:
+def intersect_automata(
+    automaton1: FiniteAutomaton, automaton2: FiniteAutomaton
+) -> FiniteAutomaton:
     res = FiniteAutomaton()
 
     for state1, index1 in automaton1.state_to_index.items():
@@ -78,15 +92,18 @@ def intersect_automata(automaton1: FiniteAutomaton, automaton2: FiniteAutomaton)
 
     labels = [label for label in automaton1.matrices if label in automaton2.matrices]
     for label in labels:
-        res.matrices[label] = kron(automaton1.matrices[label], automaton2.matrices[label], "csr")
+        res.matrices[label] = kron(
+            automaton1.matrices[label], automaton2.matrices[label], "csr"
+        )
 
     return res
 
 
-def paths_ends(graph: MultiDiGraph, start_nodes: set[int],
-               final_nodes: set[int], regex: str) -> list[tuple[NodeView, NodeView]]:
+def paths_ends(
+    graph: MultiDiGraph, start_nodes: set[int], final_nodes: set[int], regex: str
+) -> list[tuple[NodeView, NodeView]]:
     intersection = intersect_automata(
         FiniteAutomaton(regex_to_dfa(regex)),
-        FiniteAutomaton(graph_to_nfa(graph, start_nodes, final_nodes))
+        FiniteAutomaton(graph_to_nfa(graph, start_nodes, final_nodes)),
     )
     return zip(intersection.start_states, intersection.final_states)

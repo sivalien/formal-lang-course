@@ -4,7 +4,7 @@ from project.task3 import FiniteAutomaton, intersect_automata
 def reachability_with_constraints(
     fa: FiniteAutomaton, constraints_fa: FiniteAutomaton
 ) -> dict[int, set[int]]:
-    intersection = intersect_automata(fa, constraints_fa)
+    intersection = intersect_automata(fa, constraints_fa, lbl=False)
     res = {state: set() for state in fa.start_states}
 
     if intersection.is_empty():

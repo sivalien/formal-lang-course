@@ -8,17 +8,19 @@ def cfg_to_weak_normal_form(grammar, start="S") -> CFG:
     elim_cfg = grammar.eliminate_unit_productions().remove_useless_symbols()
     return CFG(
         productions=set(
-            elim_cfg._decompose_productions(elim_cfg._get_productions_with_only_single_terminals())
+            elim_cfg._decompose_productions(
+                elim_cfg._get_productions_with_only_single_terminals()
+            )
         ),
-        start_symbol=Variable(start)
+        start_symbol=Variable(start),
     )
 
 
 def cfpq_with_hellings(
-        cfg,
-        graph,
-        start_nodes: set[int] = None,
-        final_nodes: set[int] = None,
+    cfg,
+    graph,
+    start_nodes: set[int] = None,
+    final_nodes: set[int] = None,
 ) -> set[Tuple[int, int]]:
     prod_terminal, prod_epsilon, prod_mult = defaultdict(set), set(), defaultdict(set)
     for prod in cfg_to_weak_normal_form(cfg).productions:
@@ -55,7 +57,9 @@ def cfpq_with_hellings(
     return {
         (start, end)
         for (n, start, end) in r
-        if Variable(n) == cfg.start_symbol and (start_nodes is None or start in start_nodes) and (final_nodes is None or end in final_nodes)
+        if Variable(n) == cfg.start_symbol
+        and (start_nodes is None or start in start_nodes)
+        and (final_nodes is None or end in final_nodes)
     }
 
 

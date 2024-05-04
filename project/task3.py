@@ -14,6 +14,7 @@ from project.task2 import regex_to_dfa, graph_to_nfa
 
 class FiniteAutomaton:
     def __init__(self, fa=None) -> None:
+        self.lbl = True
         self.matrices = {}
         if fa is None:
             self.start_states = set()
@@ -63,14 +64,28 @@ class FiniteAutomaton:
 
         return nfa
 
+    def set_state_to_index(self, d):
+        self.state_to_index = d
+        self.index_to_state = {
+            index: state for state, index in self.state_to_index.items()
+        }
+
+    def set_true(self, label, row, column):
+        self.matrices[label][row, column] = True
+
+    def add_label_if_not_exist(self, label, dim=None):
+        if label not in self.matrices:
+            dim = dim or len(self)
+            self.matrices[label] = dok_matrix((dim, dim), dtype=bool)
+
     def accepts(self, word: Iterable[Symbol]) -> bool:
         return self.to_nfa().accepts(word)
 
     def is_empty(self) -> bool:
-        return len(self.matrices) == 0
+        return self.to_nfa().is_empty()
 
     def get_index(self, state) -> int:
-        return self.state_to_index[state]
+        return self.state_to_index.get(state, 0)
 
     def get_state_by_index(self, index: int):
         return self.index_to_state[index]
@@ -78,8 +93,11 @@ class FiniteAutomaton:
     def __len__(self):
         return len(self.state_to_index)
 
+    def labels(self):
+        return self.state_to_index.keys() if self.lbl else self.matrices.keys()
+
     def get_transitive_closure(self):
-        if self.is_empty():
+        if len(self.matrices.values()) == 0:
             return dok_matrix((0, 0), dtype=bool)
 
         closure = reduce(lambda x, y: x + y, self.matrices.values())
@@ -92,8 +110,9 @@ class FiniteAutomaton:
 
 
 def intersect_automata(
-    automaton1: FiniteAutomaton, automaton2: FiniteAutomaton
+    automaton1: FiniteAutomaton, automaton2: FiniteAutomaton, lbl: bool = True
 ) -> FiniteAutomaton:
+    automaton1.lbl = automaton2.lbl = not lbl
     res = FiniteAutomaton()
 
     for state1, index1 in automaton1.state_to_index.items():
@@ -107,7 +126,7 @@ def intersect_automata(
             if state1 in automaton1.final_states and state2 in automaton2.final_states:
                 res.final_states.add(State(index))
 
-    labels = [label for label in automaton1.matrices if label in automaton2.matrices]
+    labels = automaton1.labels() & automaton2.labels()
     for label in labels:
         res.matrices[label] = kron(
             automaton1.matrices[label], automaton2.matrices[label], "csr"
@@ -118,11 +137,10 @@ def intersect_automata(
 
 def paths_ends(
     graph: MultiDiGraph, start_nodes: set[int], final_nodes: set[int], regex: str
-) -> list[tuple[int, int]]:
-
+) -> list[tuple[object, object]]:
     nfa = FiniteAutomaton(graph_to_nfa(graph, start_nodes, final_nodes))
     dfa = FiniteAutomaton(regex_to_dfa(regex))
-    intersection = intersect_automata(nfa, dfa)
+    intersection = intersect_automata(nfa, dfa, lbl=False)
 
     if intersection.is_empty():
         return []

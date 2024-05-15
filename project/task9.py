@@ -16,11 +16,7 @@ def cfpq_with_gll(
     start_nodes: set[int] = None,
     final_nodes: set[int] = None,
 ) -> set[tuple[int, int]]:
-    rsm = (
-        rsm
-        if isinstance(rsm, RecursiveAutomaton)
-        else cfg_to_rsm(rsm)
-    )
+    rsm = rsm if isinstance(rsm, RecursiveAutomaton) else cfg_to_rsm(rsm)
 
     if not isinstance(rsm, RecursiveAutomaton):
         rsm = cfg_to_rsm(rsm)

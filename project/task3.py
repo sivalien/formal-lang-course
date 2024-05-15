@@ -64,6 +64,20 @@ class FiniteAutomaton:
 
         return nfa
 
+    def set_state_to_index(self, d):
+        self.state_to_index = d
+        self.index_to_state = {
+            index: state for state, index in self.state_to_index.items()
+        }
+
+    def set_true(self, label, row, column):
+        self.matrices[label][row, column] = True
+
+    def add_label_if_not_exist(self, label, dim=None):
+        if label not in self.matrices:
+            dim = dim or len(self)
+            self.matrices[label] = dok_matrix((dim, dim), dtype=bool)
+
     def accepts(self, word: Iterable[Symbol]) -> bool:
         return self.to_nfa().accepts(word)
 
@@ -71,7 +85,7 @@ class FiniteAutomaton:
         return self.to_nfa().is_empty()
 
     def get_index(self, state) -> int:
-        return self.state_to_index[state]
+        return self.state_to_index.get(state, 0)
 
     def get_state_by_index(self, index: int):
         return self.index_to_state[index]

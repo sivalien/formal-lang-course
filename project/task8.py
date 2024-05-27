@@ -46,11 +46,18 @@ def ebnf_to_rsm(ebnf: str) -> RecursiveAutomaton:
 
 
 def cfpq_with_tensor(
-    rsm: RecursiveAutomaton,
+    rsm: RecursiveAutomaton | CFG,
     graph: nx.MultiDiGraph,
     final_nodes: set[int] = None,
     start_nodes: set[int] = None,
 ) -> set[tuple[int, int]]:
+
+    if not isinstance(rsm, RecursiveAutomaton):
+        rsm = cfg_to_rsm(rsm)
+
+    start_nodes = graph.nodes if start_nodes is None else start_nodes
+    final_nodes = graph.nodes if final_nodes is None else final_nodes
+
     rsm_matrix = rsm_to_matrix(rsm)[0]
     automaton = FiniteAutomaton(graph_to_nfa(graph, start_nodes, final_nodes))
 

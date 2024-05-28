@@ -43,6 +43,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Generate parser
+        run: antlr4 -Dlanguage=Python3 project/language.g4 -visitor -o project/lang
+
       # Run pre-commit on all the files in the repo
       - name: Run tests
         run: python ./scripts/run_tests.py

@@ -23,7 +23,7 @@ jobs:
       matrix:
 
         # Each option you define in the matrix has a key and value
-        python-version: [ 3.9 ]
+        python-version: [ 3.10.12 ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -42,6 +42,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+
+      - name: Generate parser
+        run: antlr4 -Dlanguage=Python3 project/language.g4 -visitor -o project/lang
 
       # Run pre-commit on all the files in the repo
       - name: Run tests
